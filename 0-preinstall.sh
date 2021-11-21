@@ -130,6 +130,7 @@ uuid=`blkid | grep crypt | cut -d' ' -f2`
 quotefreeUUID=`sed -e 's/"//g' <<<"$uuid"`
 quotefreeUUID2=`sed -e 's/LABEL=ROOT //' <<<$quotefreeUUID` 
 sed -i 's/GRUB_CMDLINE_LINUX/#GRUB_CMDLINE_LINUX/' /mnt/etc/default/grub
+cat /mnt/etc/default/grub
 echo 'GRUB_CMDLINE_LINUX="cryptdevice='$quotefreeUUID2':cryptroot root=/dev/mapper/cryptroot"' >> /mnt/etc/default/grub
 grub-mkconfig -o /mnt/boot/grub/grub.cfg
 
