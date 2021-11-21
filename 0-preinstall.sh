@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Script based on ArchTitus: https://github.com/ChrisTitusTech/ArchTitus
 
-echo "Work in progress, don't use"
+echo "Work in progress, don't use me yet"
 exit
 
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
