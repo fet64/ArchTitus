@@ -59,15 +59,14 @@ if [[ ${DISK} =~ "nvme" ]]; then
 mkfs.vfat -F32 -n "EFIBOOT" "${DISK}p2"
 cryptsetup -y -v luksFormat "${DISK}p3"
 cryptsetup open "${DISK}p3" cryptroot
-# mount?
-mkfs.btrfs -L "ROOT" cryptroot -f
+mkfs.btrfs -L "ROOT" /dev/mapper/cryptroot -f
 mount -t btrfs /dev/mapper/cryptroot /mnt
 else
 mkfs.vfat -F32 -n "EFIBOOT" "${DISK}2"
 cryptsetup -y -v luksFormat "${DISK}3"
 cryptsetup open "${DISK}3" cryptroot
 # mount?
-mkfs.btrfs -L "ROOT" cryptroot -f
+mkfs.btrfs -L "ROOT" /dev/mapper/cryptroot -f
 mount -t btrfs /dev/mapper/cryptroot /mnt
 fi
 ls /mnt | xargs btrfs subvolume delete
@@ -83,7 +82,11 @@ reboot now
 esac
 
 # mount target
+if [[ ${DISK} =~ "nvme" ]]; then
 cryptsetup open "${DISK}p3" cryptroot
+else
+cryptsetup open "${DISK}3" cryptroot
+fi
 mount -t btrfs /dev/mapper/cryptroot /mnt
 
 mount -t btrfs -o subvol=@ -L ROOT /mnt
