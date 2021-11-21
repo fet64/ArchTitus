@@ -108,6 +108,11 @@ echo "-- Arch Install on Main Drive       --"
 echo "--------------------------------------"
 pacstrap /mnt base base-devel linux linux-firmware vim nano sudo archlinux-keyring wget libnewt --noconfirm --needed
 genfstab -U /mnt >> /mnt/etc/fstab
+
+# ugly solution but...
+sed -i 's/^HOOKS/HOOKS=(base udev autodetect keyboard keymap modconf block encrypt filesystems fsck)#/' /etc/mkinitcpio.conf
+mkinitcpio -p linux
+
 echo "keyserver hkp://keyserver.ubuntu.com" >> /mnt/etc/pacman.d/gnupg/gpg.conf
 cp -R ${SCRIPT_DIR} /mnt/root/ArchTitus
 cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist
@@ -116,7 +121,17 @@ echo "--GRUB BIOS Bootloader Install&Check--"
 echo "--------------------------------------"
 if [[ ! -d "/sys/firmware/efi" ]]; then
     grub-install --boot-directory=/mnt/boot ${DISK}
+else
+    grub-install --target=x86_64-efi --efi-directory=/mnt/boot --bootloader-id=GRUB
 fi
+
+grub-mkconfig -o /mnt/boot/grub/grub.cfg
+uuid=`blkid | grep cryptdevice | cut -d' ' -f2`
+quotefreeUUID=`sed -e 's/"//g' <<<"$uuid"`
+sed -i 's/GRUB_CMDLINE_LINUX/#GRUB_CMDLINE_LINUX/' /mnt/etc/default/grub
+echo 'GRUB_CMDLINE_LINUX="cryptdevice='$quotefreeUUID':cryptroot root=/dev/mapper/cryptroot"' >> /mnt/etc/default/grub
+grub-mkconfig -o /mnt/boot/grub/grub.cfg
+
 echo "--------------------------------------"
 echo "-- Check for low memory systems <8G --"
 echo "--------------------------------------"
