@@ -1,4 +1,5 @@
 #!/bin/bash
+# Script based on ArchTitus: https://github.com/ChrisTitusTech/ArchTitus
 
     bash 0-preinstall.sh
     arch-chroot /mnt /root/ArchTitus/1-setup.sh
