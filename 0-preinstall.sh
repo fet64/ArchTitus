@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # Script based on ArchTitus: https://github.com/ChrisTitusTech/ArchTitus
 
+echo "Work in progress, don't use"
+exit
+
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 echo "-------------------------------------------------"
 echo "Setting up mirrors for optimal download          "
@@ -56,12 +59,14 @@ if [[ ${DISK} =~ "nvme" ]]; then
 mkfs.vfat -F32 -n "EFIBOOT" "${DISK}p2"
 cryptsetup -y -v luksFormat "${DISK}p3"
 cryptsetup open "${DISK}p3" cryptroot
+# mount?
 mkfs.btrfs -L "ROOT" cryptroot -f
 mount -t btrfs /dev/mapper/cryptroot /mnt
 else
 mkfs.vfat -F32 -n "EFIBOOT" "${DISK}2"
-cryptsetup -y -v luksFormat "${DISK}p3"
-cryptsetup open "${DISK}p3" cryptroot
+cryptsetup -y -v luksFormat "${DISK}3"
+cryptsetup open "${DISK}3" cryptroot
+# mount?
 mkfs.btrfs -L "ROOT" cryptroot -f
 mount -t btrfs /dev/mapper/cryptroot /mnt
 fi
