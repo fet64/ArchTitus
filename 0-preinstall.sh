@@ -126,11 +126,21 @@ else
 fi
 
 grub-mkconfig -o /mnt/boot/grub/grub.cfg
-uuid=`blkid | grep cryptdevice | cut -d' ' -f2`
+uuid=`blkid | grep crypt | cut -d' ' -f2`
 quotefreeUUID=`sed -e 's/"//g' <<<"$uuid"`
 sed -i 's/GRUB_CMDLINE_LINUX/#GRUB_CMDLINE_LINUX/' /mnt/etc/default/grub
 echo 'GRUB_CMDLINE_LINUX="cryptdevice='$quotefreeUUID':cryptroot root=/dev/mapper/cryptroot"' >> /mnt/etc/default/grub
 grub-mkconfig -o /mnt/boot/grub/grub.cfg
+
+echo "Sanity check"
+echo "uuid: " $uuid
+echo "quotefreeUUID: " $quotefreeUUID
+echo "/etc/default/grub:"
+cat /mnt/etc/default/grub
+
+echo "Waiting for input: "
+read temp
+
 
 echo "--------------------------------------"
 echo "-- Check for low memory systems <8G --"
