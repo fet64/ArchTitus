@@ -121,12 +121,12 @@ echo "--GRUB BIOS Bootloader Install&Check--"
 echo "--------------------------------------"
 if [[ ! -d "/sys/firmware/efi" ]]; then
     grub-install --boot-directory=/mnt/boot ${DISK}
-else
-    grub-install --target=x86_64-efi --efi-directory=/mnt/boot --bootloader-id=GRUB
-fi
+# else
+#    grub-install --target=x86_64-efi --efi-directory=/mnt/boot --bootloader-id=GRUB
+#fi
 
 grub-mkconfig -o /mnt/boot/grub/grub.cfg
-uuid=`blkid | grep crypt | cut -d' ' -f2`
+uuid=`blkid | grep cryptroot | cut -d' ' -f3`
 quotefreeUUID=`sed -e 's/"//g' <<<"$uuid"`
 quotefreeUUID2=`sed -e 's/LABEL=ROOT //' <<<$quotefreeUUID` 
 sed -i 's/GRUB_CMDLINE_LINUX/#GRUB_CMDLINE_LINUX/' /mnt/etc/default/grub
